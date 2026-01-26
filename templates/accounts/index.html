@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Пользователи</h1>
+<div class="row">
+    {% for user in users %}
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" class="card-img-top" alt="Аватар">
+                {% else %}
+                    <img src="{% static 'img/default-avatar.png' %}" class="card-img-top" alt="Аватар">
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <a href="{% url 'profile' user.username %}" class="btn btn-primary btn-sm">Профиль</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Нет пользователей.</p>
+    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,93 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Профиль {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+        <div class="card-body">
+
+            <!-- Аватар -->
+            <div class="text-center mb-4">
+                {% if profile_user.avatar %}
+                    <img src="{{ profile_user.avatar.url }}"
+                         class="rounded-circle"
+                         width="150"
+                         height="150"
+                         style="object-fit: cover;"
+                         alt="Аватар">
+                {% else %}
+                    <img src="{% static 'img/default-avatar.png' %}"
+                         class="rounded-circle"
+                         width="150"
+                         height="150"
+                         style="object-fit: cover;"
+                         alt="Аватар">
+                {% endif %}
+            </div>
+
+            <!-- Основная информация -->
+            <h3 class="text-center mb-3">{{ profile_user.username }}</h3>
+
+            <ul class="list-group list-group-flush mb-3">
+                {% if profile_user.bio %}
+                    <li class="list-group-item">
+                        <strong>О себе:</strong><br>
+                        {{ profile_user.bio }}
+                    </li>
+                {% endif %}
+
+                {% if profile_user.email %}
+                    <li class="list-group-item">
+                        <strong>Email:</strong> {{ profile_user.email }}
+                    </li>
+                {% endif %}
+
+                {% if profile_user.phone_number %}
+                    <li class="list-group-item">
+                        <strong>Телефон:</strong> {{ profile_user.phone_number }}
+                    </li>
+                {% endif %}
+
+                {% if profile_user.city %}
+                    <li class="list-group-item">
+                        <strong>Город:</strong> {{ profile_user.city }}
+                    </li>
+                {% endif %}
+
+                {% if profile_user.birthdate %}
+                    <li class="list-group-item">
+                        <strong>Дата рождения:</strong> {{ profile_user.birthdate }}
+                    </li>
+                {% endif %}
+
+                {% if profile_user.website %}
+                    <li class="list-group-item">
+                        <strong>Сайт:</strong>
+                        <a href="{{ profile_user.website }}" target="_blank">
+                            {{ profile_user.website }}
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="list-group-item text-muted">
+                    <small>Дата регистрации: {{ profile_user.created_at|date:"d.m.Y" }}</small>
+                </li>
+            </ul>
+
+            <!-- Кнопка редактирования -->
+            {% if user == profile_user %}
+                <div class="text-center">
+                    <a href="{% url 'edit_profile' %}" class="btn btn-warning">
+                        ✏️ Редактировать профиль
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
