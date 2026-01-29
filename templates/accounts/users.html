@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<h4 class="mb-3">Все пользователи</h4>
+
+<div class="card p-3">
+  {% for u in users %}
+    <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+      <div class="d-flex align-items-center">
+        {% if u.avatar %}
+          <img src="{{ u.avatar.url }}" class="avatar" alt="">
+
+        {% else %}
+          <img src="{% static 'img/default_avatar.png' %}" class="avatar" alt="avatar">
+        {% endif %}
+        <div>
+          <div class="fw-semibold">@{{ u.username }}</div>
+          <div class="text-muted small">{{ u.city|default:"" }}</div>
+        </div>
+      </div>
+
+      <a class="btn btn-sm btn-outline-dark" href="{% url 'profile' u.username %}">Профиль</a>
+    </div>
+  {% empty %}
+    <div class="text-muted">Пользователей нет</div>
+  {% endfor %}
+</div>
+{% endblock %}

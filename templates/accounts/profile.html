@@ -1,4 +1,4 @@
-{% extends 'accounts/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Профиль {{ profile_user.username }}{% endblock %}
@@ -85,6 +85,13 @@
                 </div>
             {% endif %}
 
+
+            {% if user != profile_user %}
+                <form method="post" action="{% url 'follow_toggle' profile_user.username %}">
+                    {% csrf_token %}
+                    <button class="btn">Подписаться</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>

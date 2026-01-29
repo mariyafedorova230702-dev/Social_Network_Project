@@ -1,28 +1,108 @@
-{% extends 'accounts/base.html' %}
+{% extends "base.html" %}
 {% load static %}
-
-{% block title %}Главная{% endblock %}
+{% load humanize %}
 
 {% block content %}
-<h1 class="mb-4">Пользователи</h1>
-<div class="row">
-    {% for user in users %}
-        <div class="col-md-3 mb-3">
-            <div class="card">
-                {% if user.avatar %}
-                    <img src="{{ user.avatar.url }}" class="card-img-top" alt="Аватар">
-                {% else %}
-                    <img src="{% static 'img/default-avatar.png' %}" class="card-img-top" alt="Аватар">
-                {% endif %}
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ user.username }}</h5>
-                    <a href="{% url 'profile' user.username %}" class="btn btn-primary btn-sm">Профиль</a>
-                </div>
-            </div>
-        </div>
-    {% empty %}
-        <p>Нет пользователей.</p>
-    {% endfor %}
+
+<!-- Заголовок -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Лента</h3>
+    <a href="{% url 'users' %}" class="btn btn-sm btn-outline-secondary">
+        👥 Пользователи
+    </a>
 </div>
+
+<!-- Новый пост -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.content }}
+
+            <div class="mt-2">
+                {{ form.image }}
+            </div>
+
+            <button type="submit" name="post_submit" class="btn btn-dark w-100 mt-3">
+                Опубликовать
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Лента постов -->
+{% for post in posts %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+
+        <!-- Автор -->
+        <div class="d-flex align-items-center mb-2">
+            {% if post.author.avatar %}
+                <img src="{{ post.author.avatar.url }}" class="avatar me-2">
+            {% else %}
+                <img src="{% static 'img/default_avatar.png' %}" class="avatar me-2">
+            {% endif %}
+
+            <strong>{{ post.author.username }}</strong>
+            <small class="text-muted ms-auto">{{ post.created_at|naturaltime }}</small>
+        </div>
+
+        <!-- Текст -->
+        <p class="mb-2">{{ post.content }}</p>
+
+        <!-- Фото поста -->
+        {% if post.image %}
+            <img src="{{ post.image.url }}" class="post-image mt-2">
+        {% endif %}
+
+
+        <!-- Лайки и комментарии -->
+        <div class="d-flex justify-content-between align-items-center mt-2">
+
+            <form method="post" action="{% url 'toggle_like' post.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-primary">
+                    👍 {{ post.likes.count }}
+                </button>
+            </form>
+
+            <button
+                class="btn btn-sm btn-outline-secondary"
+                data-bs-toggle="collapse"
+                data-bs-target="#comments-{{ post.id }}">
+                💬 Комментарии ({{ post.comments.count }})
+            </button>
+        </div>
+
+        <!-- Комментарии -->
+        <div class="collapse mt-3" id="comments-{{ post.id }}">
+
+            {% for comment in post.comments.all %}
+                <div class="border-top pt-2">
+                    <strong>{{ comment.user.username }}</strong>
+                    <small class="text-muted ms-2">{{ comment.created_at|naturaltime }}</small>
+                    <div>{{ comment.content }}</div>
+                </div>
+            {% empty %}
+                <p class="text-muted small">Комментариев пока нет</p>
+            {% endfor %}
+
+            <!-- Добавить комментарий -->
+            <form method="post" action="{% url 'add_comment' post.id %}" class="mt-2">
+                {% csrf_token %}
+                {{ comment_form.content }}
+                <button class="btn btn-sm btn-outline-dark w-100 mt-2">
+                    Комментировать
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+{% endfor %}
+
 {% endblock %}
+
 
