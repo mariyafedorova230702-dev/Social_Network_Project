@@ -1,0 +1,17 @@
+# virtual environments
+.venv/
+venv/
+
+# python cache
+__pycache__/
+*.pyc
+
+# local database
+db.sqlite3
+
+# media & static build
+media/
+staticfiles/
+
+# system
+.DS_Store
