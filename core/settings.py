@@ -29,6 +29,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://social-network-project-1.onrender.com",
 ]
 
+CSRF_TRUSTED_ORIGINS += [
+    "https://social-network-project-1.onrender.com",
+    "https://*.onrender.com",
+]
 
 
 # Application definition
